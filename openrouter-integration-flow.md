@@ -20,54 +20,41 @@ A ready-to-drop **Markdown spec** for integrating OpenRouter models (incl. “fr
 
 ```mermaid
 flowchart TD
-A[Business Requirements] --> B[Feasibility & Constraints]
-B --> C[Architecture & API Design]
-C --> D[Security, Privacy & Compliance Design]
-D --> E[Implementation]
-E --> F[System & Integration Testing]
-F --> G[UAT & Performance Tests]
-G --> H[Deployment]
-H --> I[Monitoring & Cost Control]
-I --> J[Iteration & Change Control]
+  A[Business Requirements] --> B[Feasibility & Constraints]
+  B --> C[Architecture & API Design]
+  C --> D[Security, Privacy & Compliance Design]
+  D --> E[Implementation]
+  E --> F[System & Integration Testing]
+  F --> G[UAT & Performance Tests]
+  G --> H[Deployment]
+  H --> I[Monitoring & Cost Control]
+  I --> J[Iteration & Change Control]
 
-subgraph Phase Outputs
-A1[• Use cases
-• Latency targets
-• Cost ceilings
-• Model quality criteria]:::note --> A
-B1[• Free model availability policy
-• Paid fallback rules
-• Rate limits & quotas
-• Legal: data handling]:::note --> B
-C1[• Routing service spec
-• Model registry schema
-• Retry/backoff strategy
-• Observability plan]:::note --> C
-D1[• Redaction rules
-• PII policy
-• Logging controls
-• Data retention windows]:::note --> D
-E1[• Client SDK wrapper
-• Routing microservice
-• Feature flags
-• Seed model registry]:::note --> E
-F1[• Unit/integration tests
-• Sandbox key tests
-• Chaos/resilience tests]:::note --> F
-G1[• UAT scripts
-• Load tests (p95/p99)
-• Cost-per-request checks]:::note --> G
-H1[• Blue/green rollout
-• Runbooks
-• Alert thresholds]:::note --> H
-I1[• Dashboards (latency,cost,errors)
-• Auto-switch rules
-• Budget alerts]:::note --> I
-J1[• Change board
-• Playbooks for model churn]:::note --> J
-end
+  subgraph Phase Outputs
+    A1["Use cases<br/>Latency targets<br/>Cost ceilings<br/>Model quality criteria"]:::note
+    B1["Free model availability policy<br/>Paid fallback rules<br/>Rate limits & quotas<br/>Legal: data handling"]:::note
+    C1["Routing service spec<br/>Model registry schema<br/>Retry/backoff strategy<br/>Observability plan"]:::note
+    D1["Redaction rules<br/>PII policy<br/>Logging controls<br/>Data retention windows"]:::note
+    E1["Client SDK wrapper<br/>Routing microservice<br/>Feature flags<br/>Seed model registry"]:::note
+    F1["Unit/integration tests<br/>Sandbox key tests<br/>Chaos/resilience tests"]:::note
+    G1["UAT scripts<br/>Load tests (p95/p99)<br/>Cost-per-request checks"]:::note
+    H1["Blue/green rollout<br/>Runbooks<br/>Alert thresholds"]:::note
+    I1["Dashboards (latency, cost, errors)<br/>Auto-switch rules<br/>Budget alerts"]:::note
+    J1["Change board<br/>Playbooks for model churn"]:::note
+  end
 
-classDef note fill:#f7f7f7,stroke:#bbb,color:#333;
+  A1 --> A
+  B1 --> B
+  C1 --> C
+  D1 --> D
+  E1 --> E
+  F1 --> F
+  G1 --> G
+  H1 --> H
+  I1 --> I
+  J1 --> J
+
+  classDef note fill:#f7f7f7,stroke:#bbb,color:#333;
 ```
 
 ---
@@ -76,34 +63,26 @@ classDef note fill:#f7f7f7,stroke:#bbb,color:#333;
 
 ```mermaid
 flowchart TD
-A[Request In
-{task, tokens, latency_budget}] --> B[Redact/Hash PII]
-B --> C[Select Candidate Models
-(filter by task, context, quality)]
-C --> D{Free Model Available
-AND Under Rate Limit?}
-D -- Yes --> E[Route to Free Model]
-E --> F{Success?}
-F -- Yes --> Z[Return Result + Log Metrics]
-F -- No --> G[Classify Error
-(429/5xx/timeout)]
-G --> H{Retry Within Budget?}
-H -- Yes --> E2[Retry Free Model
-(exp backoff)]
-E2 --> F
-H -- No --> I{Paid Allowed?
-(budget OK)}
-I -- Yes --> J[Route to Paid Model]
-J --> K{Success?}
-K -- Yes --> Z
-K -- No --> L[Secondary Paid Fallback
-(or smaller context)]
-L --> M{Success?}
-M -- Yes --> Z
-M -- No --> N[Graceful Degrade
-(cached answer / apology)]
-I -- No --> N
-D -- No --> I
+  A["Request In<br/>{task, tokens, latency_budget}"] --> B["Redact/Hash PII"]
+  B --> C["Select Candidate Models<br/>(filter by task, context, quality)"]
+  C --> D{"Free Model Available<br/>AND Under Rate Limit?"}
+  D -- Yes --> E["Route to Free Model"]
+  E --> F{"Success?"}
+  F -- Yes --> Z["Return Result + Log Metrics"]
+  F -- No --> G["Classify Error<br/>(429/5xx/timeout)"]
+  G --> H{"Retry Within Budget?"}
+  H -- Yes --> E2["Retry Free Model<br/>(exp backoff)"]
+  E2 --> F
+  H -- No --> I{"Paid Allowed?<br/>(budget OK)"}
+  I -- Yes --> J["Route to Paid Model"]
+  J --> K{"Success?"}
+  K -- Yes --> Z
+  K -- No --> L["Secondary Paid Fallback<br/>(or smaller context)"]
+  L --> M{"Success?"}
+  M -- Yes --> Z
+  M -- No --> N["Graceful Degrade<br/>(cached answer / apology)"]
+  I -- No --> N
+  D -- No --> I
 ```
 
 **Runtime rules:**
